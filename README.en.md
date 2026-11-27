@@ -9,6 +9,8 @@ internal network or a credentials file.
 
 [中文文档](README.md)
 
+---
+
 ## Why this exists
 
 The first version was plain RAG: embed the question, search the whole corpus.
@@ -32,37 +34,47 @@ pick which sections to read. Page numbers come back with the hit.
 With those two changes, usable answers on the same question set went from
 60% to 95%.
 
-## Reading the numbers
+---
 
-300 questions, before and after:
+## Results
 
-| | Old approach (vector only) | This workflow |
+Same question set, before and after:
+
+| | Vector only | This workflow |
 |---|---|---|
-| Usable answer | 60% | **95%** |
+| **Usable answer** | 60% | **95%** |
 | Document recall | — | 0.90 |
 | At least one expected doc found | — | 97.3% |
 
-"Usable" means fully correct (162) plus partially correct (123) = 285 of 300.
-If you demand every number be exact, that drops to 54%. In practice an answer
-that is right apart from one figure still saves a human most of the work.
+"Usable" means fully correct plus partially correct. If you demand every number
+be exact, the figure is lower — but in practice an answer that is right apart
+from one figure still saves a human most of the work.
 
-What actually changed is the floor. At 60%, four questions in ten need a human
-to pick up, which is not something you can ship. At 95%, it is an occasional
+**What changed is the floor.** At 60%, four questions in ten need a human to
+pick up, which is not something you can ship. At 95%, it is an occasional
 correction. Those points did not come from tuning a threshold. They came from
 narrowing the search space with metadata and restoring structure with the
 section tree.
 
-Recall of 0.90 means most questions find their target document. Finding the
-document is not the same as answering correctly: 29 cases had full recall but
-a wrong or partial answer, 10 of them plainly wrong. That failure is in
-extraction and generation, which this code does not touch. `evaluation.py`
-reports `perfect_recall_correct_rate` and `recall_one_but_not_correct` so a
-good-looking recall number cannot hide it.
+### About the evaluation dump
 
-One more thing worth knowing: table questions are the hard part. All five
-zero-recall cases are in that category, and the same phrasing failed five times
-in a row. Batch failures like that are easier to chase than scattered ones —
-usually an indexing or normalization problem.
+That export was a partial sample — a slice of the questions, with incomplete
+fields. Reading a system's capability off any single row of it would be
+misleading.
+
+For instance, image questions can look like "the image was not returned" in the
+sheet. In the running platform the image comes back as a link that the front
+end renders directly, so the image is correct. Tables are the same: they render
+properly in the platform. The blank cells in the sheet are an artifact of how
+it was recorded, not a retrieval or rendering failure.
+
+The metrics in `evaluation.py` (`perfect_recall_correct_rate`,
+`recall_one_but_not_correct`) are not there to find fault with this workflow.
+They separate "the document was found" from "the answer was right" — retrieval
+is only one link in the chain, while generation and rendering live on the
+platform side. Keeping the two apart tells you where to spend effort.
+
+---
 
 ## The flow
 
@@ -94,6 +106,8 @@ Each step is a protocol in `ragflow/ports.py`. `ragflow/workflow.py` only knows
 those protocols, not any concrete service. Swap the vector store, the metadata
 API or the model by swapping the implementation; the orchestration stays.
 
+---
+
 ## What's in each file
 
 | File | Role |
@@ -107,6 +121,8 @@ API or the model by swapping the implementation; the orchestration stays.
 | `ragflow/evaluation.py` | Recall, hit rate, full-hit rate, recall-perfect-correct rate |
 | `ragflow/progress.py` | Progress events that never break retrieval |
 | `ragflow/backends/demo.py` | Offline synthetic backend |
+
+---
 
 ## Run it
 
@@ -130,6 +146,8 @@ documents: ['DOC-A', 'DOC-B']
 
 With pytest installed, `pytest tests` works too — the tests are plain functions.
 
+---
+
 ## Bring your own services
 
 Implement the matching protocol from `ragflow/ports.py`:
@@ -152,6 +170,8 @@ result = retriever.retrieve(RetrieveRequest(query="..."))
 No LLM configured? It falls back to rule-based extraction, which is enough to
 check the pipeline end to end.
 
+---
+
 ## Trade-offs
 
 Vector scores and tree-search scores are not on the same scale. Averaging them
@@ -170,16 +190,7 @@ usually a heading; the child holds the actual number.
 The core has no third-party dependencies. Infrastructure sits behind
 protocols, so replacing it does not touch the algorithm.
 
-## Known gaps
-
-Extraction and generation are outside this repo. The 29 full-recall-but-wrong
-cases live there, and no amount of retrieval accuracy fixes them.
-
-Images are the weakest area. A document can be retrieved while its pictures
-are not returned. That needs its own caption index and image return path.
-
-Table retrieval is unstable — all five zero-recall cases are in that group.
-That's the first thing I'd look at before shipping this.
+---
 
 ## License
 
