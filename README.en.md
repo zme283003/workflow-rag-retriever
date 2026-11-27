@@ -56,23 +56,11 @@ correction. Those points did not come from tuning a threshold. They came from
 narrowing the search space with metadata and restoring structure with the
 section tree.
 
-### About the evaluation dump
-
-That export was a partial sample — a slice of the questions, with incomplete
-fields. Reading a system's capability off any single row of it would be
-misleading.
-
-For instance, image questions can look like "the image was not returned" in the
-sheet. In the running platform the image comes back as a link that the front
-end renders directly, so the image is correct. Tables are the same: they render
-properly in the platform. The blank cells in the sheet are an artifact of how
-it was recorded, not a retrieval or rendering failure.
-
-The metrics in `evaluation.py` (`perfect_recall_correct_rate`,
-`recall_one_but_not_correct`) are not there to find fault with this workflow.
-They separate "the document was found" from "the answer was right" — retrieval
-is only one link in the chain, while generation and rendering live on the
-platform side. Keeping the two apart tells you where to spend effort.
+Retrieval is only one link in the chain. Finding the document and getting the
+answer right are two different things — generation and rendering happen on the
+platform side. Keeping the two apart tells you where to spend effort, which is
+why `evaluation.py` reports `perfect_recall_correct_rate` and
+`recall_one_but_not_correct`.
 
 ---
 
