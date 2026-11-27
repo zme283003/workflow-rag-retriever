@@ -1,0 +1,44 @@
+{
+  "doc_name": "EQ-1001 maintenance manual",
+  "structure": [
+    {
+      "node_id": "n1",
+      "title": "Overview",
+      "summary": "Purpose and scope of the equipment maintenance manual.",
+      "text": "This manual covers routine maintenance for EQ-1001.",
+      "nodes": [
+        {
+          "node_id": "n1.1",
+          "title": "Maintenance interval",
+          "summary": "Scheduled maintenance cycle is 180 days under normal load with a tolerance of 10 days.",
+          "start_index": 12,
+          "end_index": 13,
+          "text": "The maintenance interval for EQ-1001 is 180 days under normal load."
+        },
+        {
+          "node_id": "n1.2",
+          "title": "Lubrication",
+          "summary": "Recommended lubricant is ISO VG 46, replaced every 180 days.",
+          "start_index": 14,
+          "end_index": 14,
+          "text": "Use ISO VG 46 lubricant."
+        }
+      ]
+    },
+    {
+      "node_id": "n2",
+      "title": "Inspection records",
+      "summary": "Vibration and alignment measurements taken during periodic inspection.",
+      "nodes": [
+        {
+          "node_id": "n2.1",
+          "title": "Vibration level",
+          "summary": "Recorded vibration level 2.1 mm/s, within the acceptable range.",
+          "start_index": 31,
+          "end_index": 31,
+          "text": "Vibration level measured 2.1 mm/s."
+        }
+      ]
+    }
+  ]
+}

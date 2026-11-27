@@ -1,0 +1,21 @@
+{
+  "doc_name": "EQ-2002 operating guide",
+  "structure": [
+    {
+      "node_id": "m1",
+      "title": "Startup procedure",
+      "summary": "Startup requires a 30 second preheat before engaging the drive.",
+      "start_index": 5,
+      "end_index": 6,
+      "text": "Preheat for 30 seconds, then engage the drive."
+    },
+    {
+      "node_id": "m2",
+      "title": "Shutdown procedure",
+      "summary": "Shutdown follows the reverse sequence of startup.",
+      "start_index": 7,
+      "end_index": 7,
+      "text": "Reverse the startup sequence."
+    }
+  ]
+}
